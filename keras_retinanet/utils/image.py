@@ -15,6 +15,10 @@ limitations under the License.
 """
 
 from __future__ import division
+
+from urllib.parse import urlparse
+from urllib.request import urlopen
+
 import numpy as np
 import cv2
 from PIL import Image
@@ -28,7 +32,11 @@ def read_image_bgr(path):
     Args
         path: Path to the image.
     """
-    image = np.asarray(Image.open(path).convert('RGB'))
+    image_file = resolve_image_path(path)
+
+    with Image.open(image_file) as image:
+        image = np.asarray(image.convert('RGB'))
+
     return image[:, :, ::-1].copy()
 
 
@@ -80,6 +88,13 @@ def adjust_transform_for_image(transform, image, relative_translation):
     result = change_transform_origin(transform, (0.5 * width, 0.5 * height))
 
     return result
+
+
+def resolve_image_path(image_path):
+    """ Resolve if provided path is URL """
+    parsed_path = urlparse(image_path)
+
+    return urlopen(image_path) if parsed_path.netloc else image_path
 
 
 class TransformParameters:

@@ -16,7 +16,7 @@ limitations under the License.
 """
 
 from .generator import Generator
-from ..utils.image import read_image_bgr
+from ..utils.image import read_image_bgr, resolve_image_path
 
 import numpy as np
 from PIL import Image
@@ -197,9 +197,10 @@ class CSVGenerator(Generator):
     def image_aspect_ratio(self, image_index):
         """ Compute the aspect ratio for an image with image_index.
         """
-        # PIL is fast for metadata
-        image = Image.open(self.image_path(image_index))
-        return float(image.width) / float(image.height)
+        image_file = resolve_image_path(self.image_path(image_index))
+
+        with Image.open(image_file) as image:
+            return float(image.width) / float(image.height)
 
     def load_image(self, image_index):
         """ Load an image at the image_index.
