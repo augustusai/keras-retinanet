@@ -32,8 +32,7 @@ def read_image_bgr(path, raw_image=False):
     Args
         path: Path to the image.
     """
-    if not raw_image:
-        image_file = resolve_image_path(path)
+    image_file = resolve_image_path(path) if not raw_image else path
 
     with Image.open(image_file) as image:
         image = np.asarray(image.convert('RGB'))
