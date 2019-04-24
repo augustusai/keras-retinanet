@@ -26,13 +26,14 @@ from PIL import Image
 from .transform import change_transform_origin
 
 
-def read_image_bgr(path):
+def read_image_bgr(path, raw_image=False):
     """ Read an image in BGR format.
 
     Args
         path: Path to the image.
     """
-    image_file = resolve_image_path(path)
+    if not raw_image:
+        image_file = resolve_image_path(path)
 
     with Image.open(image_file) as image:
         image = np.asarray(image.convert('RGB'))
